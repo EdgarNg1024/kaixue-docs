@@ -54,6 +54,8 @@ override fun onCreate(saveInstanceState:Bundle?){
 
     本章代码使用了 Google I/O 2018 的 APP github 的源码，如需查看全部源码，请点击https://github.com/google/iosched/
 
+![Google I/O 2018 app数据架构](https://s2.ax1x.com/2019/02/12/kdEJ4s.png)
+
 ## 内部实现
 
     偏向源码以及设计思想分析，不感兴趣的同学可以跳过这章，谢谢！
@@ -117,3 +119,4 @@ ViewModelStore 是通过 `activity.getViewModelStore()` 或 `fragment.getViewMod
 
 ## 参考
 1. [Android Jetpack - ViewModel | 中文教学视频](https://www.bilibili.com/video/av29949898)
+1. [Google I/O 2018 app — Architecture and Testing](https://medium.com/androiddevelopers/google-i-o-2018-app-architecture-and-testing-f546e37fc7eb)
