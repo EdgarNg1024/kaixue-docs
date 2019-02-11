@@ -52,6 +52,8 @@ override fun onCreate(saveInstanceState:Bundle?){
 
 ## 实际应用
 
+    本章代码使用了 Google I/O 2018 的 APP github 的源码，如需查看全部源码，请点击https://github.com/google/iosched/
+
 ## 内部实现
 
     偏向源码以及设计思想分析，不感兴趣的同学可以跳过这章，谢谢！
@@ -109,7 +111,7 @@ ViewModelStore 是通过 `activity.getViewModelStore()` 或 `fragment.getViewMod
 
 ![k8z29I.png](https://s2.ax1x.com/2019/02/03/k8z29I.png)
 
-所以这就解析了，ViewModel 的生命周期为什么可以跟 Activity 一样长的了。
+所以这就解析了，ViewModel 的生命周期为什么可以跟 Activity 一样长，以及为什么可以在配置变更后还可以继续复用了。
 
 ## 源码地址
 
