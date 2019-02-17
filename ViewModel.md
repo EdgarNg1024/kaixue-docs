@@ -9,11 +9,15 @@ Android Jetpack 是一系列助力您更容易打造优秀 Android 应用的工�
 
 ## 解决了什么问题
 
-手机屏幕旋转是配置变更的一种，当旋转屏幕时， Activity 会被重新创建。如果数据没有被正确的保存和恢复，就有可能丢失。从而导致莫名其妙的 UI 错误，甚至应用崩溃。
+手机屏幕旋转是配置变更的一种，当旋转屏幕时， Activity 会被重新创建。如果数据没有被正确的保存和恢复，就有可能丢失。从而导致莫名其妙的 UI 错误，甚至应用崩溃。Demo请点击[这里]()
+
+![kyIxiT.gif](https://s2.ax1x.com/2019/02/17/kyIxiT.gif)
 
 ![应用 UI 数据丢失](https://s2.ax1x.com/2019/01/29/kQOejs.png)
 
 相反的， ViewModel 会在配置更改后继续存在，所以，如果将应用所有的 UI 数据保存在 ViewModel 中，而不是 Activity 中，这样就可以保证数据不会受到配置变更的影响了。
+
+![kyoeJO.gif](https://s2.ax1x.com/2019/02/17/kyoeJO.gif)
 
 ![数据保存在 ViewModel 中](https://s2.ax1x.com/2019/01/29/kQOs8e.png)
 
@@ -23,7 +27,7 @@ Android Jetpack 是一系列助力您更容易打造优秀 Android 应用的工�
 
 ## 简单使用
 
-上面提到，不要将太多的逻辑处理、数据存储获取放到 ViewModel 类里面处理，它仅仅作为 UI 数据的保存！数据存储获取可以创建 Repository 类， UI 数据处理可以使用 Presenter 类。
+上面提到，不要将太多的逻辑处理、数据存储获取放到 ViewModel 类里面处理，它仅仅作为 UI 数据的保存！数据存储获取可以创建 Repository 类， UI 数据处理可以使用 Presenter 类。Demo请点击[这里]()
 
 ![各类职责](https://s2.ax1x.com/2019/01/29/kQX0Ln.png)
 
