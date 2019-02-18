@@ -9,15 +9,15 @@ Android Jetpack 是一系列助力您更容易打造优秀 Android 应用的工�
 
 ## 解决了什么问题
 
-手机屏幕旋转是配置变更的一种，当旋转屏幕时， Activity 会被重新创建。如果数据没有被正确的保存和恢复，就有可能丢失。从而导致莫名其妙的 UI 错误，甚至应用崩溃。Demo请点击[这里]()
+手机屏幕旋转是配置变更的一种，当旋转屏幕时， Activity 会被重新创建。如果数据没有被正确的保存和恢复，就有可能丢失。从而导致莫名其妙的 UI 错误，甚至应用崩溃。Demo请点击[这里](https://github.com/EdgarNg1024/kaixue-docs/tree/master/viewmodel/MyApplication)
 
-![kyIxiT.gif](https://s2.ax1x.com/2019/02/17/kyIxiT.gif)
+![kyHxB9.gif](https://s2.ax1x.com/2019/02/17/kyHxB9.gif)
 
 ![应用 UI 数据丢失](https://s2.ax1x.com/2019/01/29/kQOejs.png)
 
 相反的， ViewModel 会在配置更改后继续存在，所以，如果将应用所有的 UI 数据保存在 ViewModel 中，而不是 Activity 中，这样就可以保证数据不会受到配置变更的影响了。
 
-![kyoeJO.gif](https://s2.ax1x.com/2019/02/17/kyoeJO.gif)
+![kybeHA.gif](https://s2.ax1x.com/2019/02/17/kybeHA.gif)
 
 ![数据保存在 ViewModel 中](https://s2.ax1x.com/2019/01/29/kQOs8e.png)
 
@@ -27,7 +27,7 @@ Android Jetpack 是一系列助力您更容易打造优秀 Android 应用的工�
 
 ## 简单使用
 
-上面提到，不要将太多的逻辑处理、数据存储获取放到 ViewModel 类里面处理，它仅仅作为 UI 数据的保存！数据存储获取可以创建 Repository 类， UI 数据处理可以使用 Presenter 类。Demo请点击[这里]()
+上面提到，不要将太多的逻辑处理、数据存储获取放到 ViewModel 类里面处理，它仅仅作为 UI 数据的保存！数据存储获取可以创建 Repository 类， UI 数据处理可以使用 Presenter 类。Demo请点击[这里](https://github.com/EdgarNg1024/kaixue-docs/tree/master/viewmodel/MyApplication)
 
 ![各类职责](https://s2.ax1x.com/2019/01/29/kQX0Ln.png)
 
@@ -71,13 +71,17 @@ override fun onCreate(saveInstanceState:Bundle?){
 
 ![Google I/O 2018 app数据架构](https://s2.ax1x.com/2019/02/12/kdEJ4s.png)
 
-展示层具体使用以下技术
+展示层具体使用以下技术：Views + ViewModels + Data Binding + LiveData
 
->Presentation layer: Views + ViewModels + Data Binding
-ViewModels provide data to the views via LiveData. The actual UI calls are done with Data Binding, relieving the activities and fragments from boilerplate.
-We deal with events using an event wrapper, modeled as part of the UI’s state. Read more about this pattern in this blog post.
+ViewModels 从 LiveData 那里获取数据提供给 Views，通过 Data Binding 真正的 UI 控件就可以自动完成数据显示，可以从 Activity 和 Fragment 那些繁杂而单调的样式代码中解放出来。
 
 ### 业务事例
+
+接下来我们会通过讲述 Google I/O 中日程活动详情业务来说明 ViewModel 是如何通过和其他组件合作来完成任务的。
+
+[![kyLeYt.md.jpg](https://s2.ax1x.com/2019/02/17/kyLeYt.md.jpg)](https://imgchr.com/i/kyLeYt)
+
+
 
 ### ViewModel 的 Unit test
 
@@ -89,7 +93,6 @@ We deal with events using an event wrapper, modeled as part of the UI’s state.
 为了更好地详细了解 ViewModel,我们可以带着几个问题去学习:
 1. ViewModel 是怎么生成的?
 1. ViewModel 为什么可以达到这么神奇的效果，Activity/Fragment 都重新生成居然还可以活下来,它是怎么做到的?
-
 
 ### 1. 常见的 ViewModel 实现方式:
 
@@ -115,18 +118,31 @@ Ps：请注意 ViewModelProvider 和 ViewModelProviders，是两个独立的类�
 
 首先我们重温一下 ViewModel 的生命周期(如上图)，ViewModel 的生命周期不会因为配置变更（Activity 的多次调用`onCreate()`方法）会终止，反而会和 Activity 的 `onDestroy()`方法一起结束。为什么可以这样子？！请接着往下看。
 
-![](https://s2.ax1x.com/2019/02/02/k8XGWV.png)
+![kcd0C6.png](https://s2.ax1x.com/2019/02/18/kcd0C6.png)
 
-
-要想知道 ViewModel 的生命周期，可以从 ViewModel 那里获得答案。根据 ViewModel 生成的流程图可以知道，是调用了 `ViewModelProvider.get(@NonNull String key, @NonNull Class<T> modelClass)` 返回生成 ViewModel 的。返回 ViewModel 之前调用了 `mViewModelStore.put(key, viewModel)`。这个 `mViewModelStore` 就是实例化 ViewModelProvider 时候传进来的（请见 ViewModel 生成的流程图，由 `activity.getViewModelStore()` 或 `fragment.getViewModelStore()` 获得）。
-
-![ViewModel 生成过程](https://s2.ax1x.com/2019/02/02/k8jzHH.png)
-
-继续查看 `mViewModelStore.put(key, viewModel)`内部实现了什么，代码不多,就是常见的内部缓存了一个Map进行对ViewModel的管理。
+要想知道 ViewModel 的生命周期，思路上当然是从 ViewModel 那里获得答案（其实从 UI 控制器那里获取更快，不过这算作弊）。根据 ViewModel 生成的流程图可以知道，是调用了 `ViewModelProvider.get(@NonNull String key, @NonNull Class<T> modelClass)` 返回生成 ViewModel 的，查看源码 get 方法（上图）可以知道，一共有两处地方生成 ViewModel 的，`ViewModel viewModel = mViewModelStore.get(key);` 和 `viewModel = mFactory.create(key, modelClass);` ，但是生成完了之后都通过 `mViewModelStore.put(key, viewModel);` ，通过方法名称应该就是一个缓存器，查看 `mViewModelStore.put(key, viewModel)`的源码后，发现就是常见的内部缓存了一个Map进行对ViewModel的管理。
 
 ![ViewModelStore](https://s2.ax1x.com/2019/02/03/k8va5R.md.png)
 
-ViewModelStore 是通过 `activity.getViewModelStore()` 或 `fragment.getViewModelStore()` 获得的，可见 ViewModelStore 通过 put 方法将 ViewModel 和 activity、fragment 进行绑定，所以只要  activity、fragment 这个对象没有被回收，理论上 ViewModel 就可以和 activity、fragment 的存活时长一样继续存活下去[ ViewModel 的初期版本功能实现是通过 ViewModel 自己创建一个新的 Fragment 来保持生命周期，所以早期会说千万不要绑定 Activity、Fragment ，而现在的 ViewModel 就相当于 Activity、Fragment 中的一个属性对象，所以这也就回答了“ **ViewModel 是不是一定不能绑定 Activity、Fragment 的问题？**”]。而 ViewModel 什么时候才会被 clear 掉呢？根据 ViewModel 的生命周期图标，应该是 activity 调用 `onFinish()` 会调用 ViewModel 的 `clear()`。我们进一步查看哪里调用了 ViewModel 的 `clear()` 方法，可知会从 `ComponentActivity.Java` 和 `FragmentManagerViewModel.java` 处有所调用，我们先分析 `ComponentActivity.Java`。
+那么这个 `mViewModelStore` **是什么**？**为什么要缓存 `viewModel` 呢**？
+
+这个 `mViewModelStore` 就是实例化 ViewModelProvider 时候传进来的（请见 ViewModel 生成的流程图，由 `activity.getViewModelStore()` 或 `fragment.getViewModelStore()` 获得）。
+
+![kcwoJx.png](https://s2.ax1x.com/2019/02/18/kcwoJx.png)
+
+了解 `mViewModelStore` 是什么之后，我们就解决第二个疑问？ UI 控制器中的属性 `mViewModelStore` 为什么要缓存viewModel？难道是想重新拿出来用，来达到 `ViewModel` 的长生命周期？(因为刚刚上上图提到第一处生成 `ViewModel` 的就是从 `mViewModelStore` 那里 `get(key)` 出来的)接下来我们就去了解 `mViewModelStore` 在 Activity 和 Fragment 中的作用了，我们先了解 Activity 的。
+
+在 Activity 中能够看到 `getViewModelStore()` 方法，mViewModelStore 有三种方式，1.自身不为 null ；2. `nc.viewModelStore` ;3. `new ViewModelStore();`。通过查看 `mViewModelStore` 在整个 `Activity` 类中，只有这个方法用到，所以 `mViewModelStore` 只能从2 3中获得实例。3不用说，直接看2 -- `getLastNonConfigurationInstance()` 从名字上看相当有嫌疑！
+
+![kc0zB4.png](https://s2.ax1x.com/2019/02/18/kc0zB4.png)
+
+点击 `getLastNonConfigurationInstance()` 查看源码，发现描述如下图。通过描述可以知道，我们没有找错！！获得之前由{@link #onRetainNonConfigurationInstance（）}返回的 non-configuration instance data 。这将从初始化 {@link #onCreate} 和 {@link #onStart} 调用新实例中获得 non-configuration instance data ，允许您从**前一个实例**中提取任何有用的动态状态。话虽如此，但是还是想知道 `mLastNonConfigurationInstances` **它是怎么来的？为什么可以传过山和大海，来到这人山人海**[TODO:]
+
+![kcDusU.png](https://s2.ax1x.com/2019/02/18/kcDusU.png)
+
+[ ViewModel 的初期版本功能实现是通过 ViewModel 自己创建一个新的 Fragment 来保持生命周期，所以早期会说千万不要绑定 Activity、Fragment ，而现在的 ViewModel 就相当于 Activity、Fragment 中的一个属性对象，所以这也就回答了“ **ViewModel 是不是一定不能绑定 Activity、Fragment 的问题？**”]。
+
+而 ViewModel 什么时候才会被 clear 掉呢？根据 ViewModel 的生命周期图标，应该是 activity 调用 `onFinish()` 会调用 ViewModel 的 `clear()`。我们进一步查看哪里调用了 ViewModel 的 `clear()` 方法，可知会从 `ComponentActivity.Java` 和 `FragmentManagerViewModel.java` 处有所调用，我们先分析 `ComponentActivity.Java`。
 
 由下图可以看到，当 ComponentActivity 是 `ON_DESTROY` 状态时，而且不是``配置变更``时，会调用 `ViewModelStore.clear()` 方法清空与之绑定的 ViewModel 数据。
 
