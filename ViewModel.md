@@ -132,7 +132,7 @@ Ps：请注意 ViewModelProvider 和 ViewModelProviders，是两个独立的类�
 
 了解 `mViewModelStore` 是什么之后，我们就解决第二个疑问？ UI 控制器中的属性 `mViewModelStore` 为什么要缓存viewModel？难道是想重新拿出来用，来达到 `ViewModel` 的长生命周期？(因为刚刚上上图提到第一处生成 `ViewModel` 的就是从 `mViewModelStore` 那里 `get(key)` 出来的)接下来我们就去了解 `mViewModelStore` 在 Activity 和 Fragment 中的作用了，我们先了解 Activity 的。
 
-在 Activity 中能够看到 `getViewModelStore()` 方法，mViewModelStore 有三种方式，1.自身不为 null ；2. `nc.viewModelStore` ;3. `new ViewModelStore();`。通过查看 `mViewModelStore` 在整个 `Activity` 类中，只有这个方法用到，所以 `mViewModelStore` 只能从2 3中获得实例。3不用说，直接看2 -- `getLastNonConfigurationInstance()` 从名字上看相当有嫌疑！
+在 Activity 中能够看到 `getViewModelStore()` 方法，mViewModelStore 有三种方式，1.自身不为 null ；2. `nc.viewModelStore` ;3. `new ViewModelStore();`。通过查看 `mViewModelStore` 在整个 `Activity` 类中，只有这个方法用到，所以 `mViewModelStore` 只能从2 3中获得实例。3不用说，直接看2 --> `getLastNonConfigurationInstance()` 从名字上看相当有嫌疑！
 
 ![kc0zB4.png](https://s2.ax1x.com/2019/02/18/kc0zB4.png)
 
@@ -140,7 +140,7 @@ Ps：请注意 ViewModelProvider 和 ViewModelProviders，是两个独立的类�
 
 ![kcDusU.png](https://s2.ax1x.com/2019/02/18/kcDusU.png)
 
-[ ViewModel 的初期版本功能实现是通过 ViewModel 自己创建一个新的 Fragment 来保持生命周期，所以早期会说千万不要绑定 Activity、Fragment ，而现在的 ViewModel 就相当于 Activity、Fragment 中的一个属性对象，所以这也就回答了“ **ViewModel 是不是一定不能绑定 Activity、Fragment 的问题？**”]。
+所以这也就回答了“ **ViewModel 是不是一定不能绑定 Activity、Fragment 的问题？**”
 
 而 ViewModel 什么时候才会被 clear 掉呢？根据 ViewModel 的生命周期图标，应该是 activity 调用 `onFinish()` 会调用 ViewModel 的 `clear()`。我们进一步查看哪里调用了 ViewModel 的 `clear()` 方法，可知会从 `ComponentActivity.Java` 和 `FragmentManagerViewModel.java` 处有所调用，我们先分析 `ComponentActivity.Java`。
 
