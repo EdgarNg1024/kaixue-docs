@@ -5,7 +5,7 @@ Android Jetpack 是一系列助力您更容易打造优秀 Android 应用的工�
 
 ## 介绍
 
-简单来说,ViewModel 是用来保存应用 UI 数据的类,而且它会在配置变更后继续存在。它可以脱离 View 单纯做 Junit 的测试，更方便大家做单元测试。ViewModel 有这样的特性，但是它在实际项目能够有何表现，还需要看待各位是如何使用的。一般会和 Livedata、databinding 等其他组件进行组合使用，下面会介绍具体可以解决什么问题，和一般项目中会建议如何使用。
+简单来说,ViewModel 是用来保存应用 UI 数据的类,而且它会在配置变更后继续存在。它可以脱离 View 单纯做 Junit 的测试，更方便大家做单元测试。ViewModel 有这样的特性，但是它在实际项目能够有何表现，还需要看待各位是如何使用的。一般会和 Livedata、databinding 等其他组件进行组合使用，下面会介绍具体可以解决什么问题，和一般项目中会建议如何使用。在介绍的过程中，还会穿插一些架构的思想以及如何看源码分析源码的思路。
 
 ## 解决了什么问题
 
@@ -136,11 +136,33 @@ Ps：请注意 ViewModelProvider 和 ViewModelProviders，是两个独立的类�
 
 ![kc0zB4.png](https://s2.ax1x.com/2019/02/18/kc0zB4.png)
 
-点击 `getLastNonConfigurationInstance()` 查看源码，发现描述如下图。通过描述可以知道，我们没有找错！！获得之前由{@link #onRetainNonConfigurationInstance（）}返回的 non-configuration instance data 。这将从初始化 {@link #onCreate} 和 {@link #onStart} 调用新实例中获得 non-configuration instance data ，允许您从**前一个实例**中提取任何有用的动态状态。话虽如此，但是还是想知道 `mLastNonConfigurationInstances` **它是怎么来的？为什么可以传过山和大海，来到这人山人海**[TODO:]
+点击 `getLastNonConfigurationInstance()` 查看源码，发现描述如下图。通过描述可以知道，我们没有找错！！获得之前由{@link #onRetainNonConfigurationInstance（）}返回的 non-configuration instance data 。这将从初始化 {@link #onCreate} 和 {@link #onStart} 调用新实例中获得 non-configuration instance data ，允许您从**前一个实例**中提取任何有用的动态状态。话虽如此，但是还是想知道 `mLastNonConfigurationInstances` **它是怎么来的？为什么可以把上一个 Activity 的 NonConfigurationInstances 数据拿到现在的 Activity 来**
 
 ![kcDusU.png](https://s2.ax1x.com/2019/02/18/kcDusU.png)
 
-所以这也就回答了“ **ViewModel 是不是一定不能绑定 Activity、Fragment 的问题？**”
+根据描述，是从 `onRetainNonConfigurationInstance（）` 方法那里来的，但是查看了 `Activity` 的这个方法，发现方法里面是 `null` ！然后难道是子类做了实现？为什么会这么想？
+
+![kgIaA1.png](https://s2.ax1x.com/2019/02/19/kgIaA1.png)
+
+![kc0zB4.png](https://s2.ax1x.com/2019/02/18/kc0zB4.png)
+
+![kg7N7j.png](https://s2.ax1x.com/2019/02/19/kg7N7j.png)
+
+因为 `public static ViewModelProvider of(@NonNull FragmentActivity activity,@Nullable Factory factory)` 中使用的是 `FragmentActivity` 而不是 `Activity` ，在方法设计上会偏向使用基类来进行参数传递。而且之前的 `mViewModelStore` 也是由 `FragmentActivity` 的父类 `ComponentActivity` 生成的，而且 `NonConfigurationInstances` 类也是 `ComponentActivity` 的内部类。所以我们这才推断是不是 `Activity` 的子类实现了。同时我们也可以学习到：
+
+> 1. 要对 `Activity`、`ComponentActivity`、`FragmentActivity`、`AppCompatActivity` 之间的异同有所涉猎，尤其在设计底层框架以及接口的时候，要慎重选择，不然会设计出来不好用，处处受阻。
+> 1. 设计底层的时候，类适当的分层继承有助于架构的清晰解耦。
+
+我们只需查看 `FragmentActivity` 和 `ComponentActivity` 哪个类实现了 `onRetainNonConfigurationInstance（）` 就可以了。
+
+查看 `FragmentActivity` 的父类 `ComponentActivity` 的时候可以见到
+
+
+
+
+
+
+所以这也同时回答了“ **ViewModel 是不是一定不能绑定 Activity、Fragment 的问题？**”
 
 而 ViewModel 什么时候才会被 clear 掉呢？根据 ViewModel 的生命周期图标，应该是 activity 调用 `onFinish()` 会调用 ViewModel 的 `clear()`。我们进一步查看哪里调用了 ViewModel 的 `clear()` 方法，可知会从 `ComponentActivity.Java` 和 `FragmentManagerViewModel.java` 处有所调用，我们先分析 `ComponentActivity.Java`。
 
@@ -168,3 +190,6 @@ Ps：请注意 ViewModelProvider 和 ViewModelProviders，是两个独立的类�
 1. [ViewModels and LiveData: Patterns + AntiPatterns](https://medium.com/google-developers/viewmodels-and-livedata-patterns-antipatterns-21efaef74a54) [(译文)](https://github.com/xitu/gold-miner/blob/master/TODO/viewmodels-and-livedata-patterns-antipatterns.md)[强烈推荐，作者应该是 Google 里面有参与 ViewModel 的实现开发的，所以文章的推荐用法应该是最贴近 ViewModel 开发思想]
 1. [ViewModels: Persistence, onSaveInstanceState(), Restoring UI State and Loaders](https://medium.com/google-developers/viewmodels-persistence-onsaveinstancestate-restoring-ui-state-and-loaders-fc7cc4a6c090) [(译文)](https://github.com/xitu/gold-miner/blob/master/TODO/viewmodels-persistence-onsaveinstancestate-restoring-ui-state-and-loaders.md)[强烈推荐，作者应该是 Google 里面有参与 ViewModel 的实现开发的，所以文章的推荐用法应该是最贴近 ViewModel 开发思想]
 1. [Google I/O 2018 app — Architecture and Testing](https://medium.com/androiddevelopers/google-i-o-2018-app-architecture-and-testing-f546e37fc7eb)[强烈推荐，作者应该是 Google 里面有参与 ViewModel 的实现开发的，所以文章的推荐用法应该是最贴近 ViewModel 开发思想]
+
+## 撰稿人
+Edgar Ng（https://github.com/EdgarNg1024)
