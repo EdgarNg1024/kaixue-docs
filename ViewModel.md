@@ -60,7 +60,10 @@ override fun onCreate(saveInstanceState:Bundle?){
 > 
 > 本章也会通过购买VIP会员这个业务功能点来简述实际项目中会如何使用 ViewModel 。具体代码链接请点击[这里](todo)
 
-[![k4oUIg.png](https://s2.ax1x.com/2019/02/24/k4oUIg.png)](https://imgchr.com/i/k4oUIg)   [![k4odiQ.png](https://s2.ax1x.com/2019/02/24/k4odiQ.png)](https://imgchr.com/i/k4odiQ)
+![k4TX7T.png](https://s2.ax1x.com/2019/02/24/k4TX7T.png)   [![k4odiQ.png](https://s2.ax1x.com/2019/02/24/k4odiQ.png)](https://imgchr.com/i/k4odiQ)
+
+![k5FfHO.jpg](https://s2.ax1x.com/2019/02/24/k5FfHO.jpg)  ![k5F4ED.jpg](https://s2.ax1x.com/2019/02/24/k5F4ED.jpg)
+
 
 该 Demo 总得来说分为三层：展示层（Presentation Layer）、域层（Domain Layer）、数据层（Data Layer），如下图所示。
 
@@ -72,7 +75,7 @@ override fun onCreate(saveInstanceState:Bundle?){
 
 ![Google I/O 2018 app数据架构](https://s2.ax1x.com/2019/02/12/kdEJ4s.png)
 
-展示层具体使用以下技术：Views + ViewModels + Data Binding + LiveData
+展示层具体使用以下技术：Views + ViewModels + LiveData
 
 ViewModels 从 LiveData 那里获取数据提供给 Views，通过 Data Binding 真正的 UI 控件就可以自动完成数据显示，可以从 Activity 和 Fragment 那些繁杂而单调的样式代码中解放出来。
 
