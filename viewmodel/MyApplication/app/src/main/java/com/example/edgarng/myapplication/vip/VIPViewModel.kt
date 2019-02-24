@@ -27,6 +27,10 @@ class VIPViewModel : ViewModel {
     }
 
     fun buyVIP() {
+        val calendar = Calendar.getInstance()
+        calendar.time = this.deadLineDate
+        calendar.add(Calendar.MONTH, 1)
+        this.deadLineDate = calendar.time
         _VIPAction.value = this
     }
 

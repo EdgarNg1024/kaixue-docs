@@ -3,6 +3,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="#FFFFFF"
                 tools:context=".ProfileFragment">
 
     <TextView
@@ -14,36 +15,28 @@
             android:layout_alignParentTop="true"/>
 
     <TextView
-            android:id="@+id/txtTips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="过期日期"
-            android:layout_marginTop="19dp"
-            android:layout_below="@+id/txtUserName"/>
-
-    <TextView
-            android:layout_toRightOf="@id/txtTips"
             android:id="@+id/txtDeadlineDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="deadlineDate"
-            android:layout_alignTop="@+id/txtTips"
-            android:layout_marginLeft="18dp"/>
-
-
-
-    <Button
-            android:text="自动续费"
-            android:layout_below="@id/txtTips"
-            android:id="@+id/btnBuyVIP"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_marginTop="19dp"
+            android:layout_below="@+id/txtUserName"/>
 
     <TextView
+            android:layout_toRightOf="@id/txtDeadlineDate"
+            android:id="@+id/txtTips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="【自动续费】后，这个页面的过期日期也会自动更新，翻转屏幕数据也还会在"
-            android:layout_marginTop="19dp"
-            android:layout_below="@+id/btnBuyVIP"/>
+            android:text="到期，购买后有效期延长1个月"
+            android:layout_alignTop="@+id/txtDeadlineDate"
+            android:layout_marginLeft="18dp"/>
+
+    <Button
+            android:text="立即支付9.9元"
+            android:id="@+id/btnBuyVIP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="30dp"/>
 
 </RelativeLayout>

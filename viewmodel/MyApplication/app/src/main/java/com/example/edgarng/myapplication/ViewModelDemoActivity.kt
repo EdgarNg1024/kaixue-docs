@@ -1,7 +1,7 @@
 package com.example.edgarng.myapplication
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
 class ViewModelDemoActivity : AppCompatActivity() {
@@ -15,9 +15,21 @@ class ViewModelDemoActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-    fun addFragment(fragment:Fragment){
+    fun addFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.fragmentLayout, fragment)
+        transaction.add(R.id.fragmentLayout, fragment, fragment.javaClass.simpleName)
         transaction.commit()
+    }
+
+    override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentByTag(BuyVIPFragment::class.java.simpleName)
+        if (fragment != null) {
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+        } else {
+            super.onBackPressed()
+        }
+
     }
 }

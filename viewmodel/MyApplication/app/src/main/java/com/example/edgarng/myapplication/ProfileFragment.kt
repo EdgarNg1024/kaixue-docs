@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 
 class ProfileFragment : Fragment() {
 
-    var vipViewModel: VIPViewModel? = null
+    private lateinit var vipViewModel: VIPViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,14 +28,15 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vipViewModel = ViewModelProviders.of(activity!!, VIPViewModelFactory()).get(VIPViewModel::class.java)
-        vipViewModel?.vipAction?.observe(this@ProfileFragment, Observer<VIPViewModel> {
-            txtUserName.text = it.userName
-            txtDeadlineDate.text = SimpleDateFormat("yyyy-MM-dd").format(it.deadLineDate)
-        })
-
+        activity?.let { activity ->
+            vipViewModel = ViewModelProviders.of(activity, VIPViewModelFactory()).get(VIPViewModel::class.java)
+            vipViewModel.vipAction.observe(activity, Observer<VIPViewModel> {
+                txtUserName?.text = it.userName
+                txtDeadlineDate?.text = SimpleDateFormat("yyyy-MM-dd").format(it.deadLineDate)
+            })
+        }
         btnBuyVIP.setOnClickListener {
-            (activity as ViewModelDemoActivity).addFragment()
+            (activity as ViewModelDemoActivity).addFragment(BuyVIPFragment())
         }
     }
 }
