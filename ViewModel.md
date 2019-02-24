@@ -157,12 +157,12 @@ Ps：请注意 ViewModelProvider 和 ViewModelProviders，是两个独立的类�
 
 查看 `FragmentActivity` 的父类 `ComponentActivity` 的时候可以见到
 
+TODO:
+已知是调用ComponentActivity的onRetainNonConfigurationInstance（）来保存了NonConfigurationInstances数据的，这就涉及到APP的启动、AMS等一系列比较复杂的过程，推荐点击[ConfigurationChanged流程梳理(屏幕旋转、语言及字体切换)](https://www.jianshu.com/p/e3f9de297370)
+1. 这个方法是什么时候被调用的？
+2. 它是如何将数据给下一个Activity的？
 
-
-
-
-
-所以这也同时回答了“ **ViewModel 是不是一定不能绑定 Activity、Fragment 的问题？**”
+所以这也同时回答了“ **ViewModel 为什么不能绑定 Activity、Fragment 的问题？**”
 
 而 ViewModel 什么时候才会被 clear 掉呢？根据 ViewModel 的生命周期图标，应该是 activity 调用 `onFinish()` 会调用 ViewModel 的 `clear()`。我们进一步查看哪里调用了 ViewModel 的 `clear()` 方法，可知会从 `ComponentActivity.Java` 和 `FragmentManagerViewModel.java` 处有所调用，我们先分析 `ComponentActivity.Java`。
 
