@@ -10,14 +10,31 @@
             android:id="@+id/btnNoViewModel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="No ViewModel" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"/>
+            android:text="No ViewModel"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="4dp"
+            app:layout_constraintHorizontal_bias="0.0"/>
 
     <Button
             android:id="@+id/btnViewmodel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="ViewModel"
-            app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="18dp"
-            app:layout_constraintTop_toBottomOf="@+id/btnNoViewModel" app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="18dp"
+            app:layout_constraintTop_toBottomOf="@+id/btnNoViewModel"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+            android:id="@+id/btnViewmodelDemo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="ViewModel Demo"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="18dp"
+            app:layout_constraintTop_toBottomOf="@+id/btnViewmodel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

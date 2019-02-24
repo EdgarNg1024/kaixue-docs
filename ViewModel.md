@@ -56,12 +56,13 @@ override fun onCreate(saveInstanceState:Bundle?){
 
 ## 实际应用
 
-> ViewModel 一般会搭载其他组件（如：LiveData 等）一同使用，本系列文章会专门出一篇文章就 ViewModel 及其他组件搭配使用进行说明讲解，请点击[此处]。
->本章也会简述实际项目中会如何使用 ViewModel ，本章代码使用了 Google I/O 2018 的 APP github 的源码进行讲解，如需查看全部源码，请点击[这里](https://github.com/google/iosched/ )，如需了解整个项目的架构，请点击 [这里](https://medium.com/androiddevelopers/google-i-o-2018-app-architecture-and-testing-f546e37fc7eb )。本章主要阐述 ViewModel 是如何跟其他组件合作搭配使用。
+> ViewModel 一般会搭载其他组件（如：LiveData、DataBinding 等）一同使用，本系列文章会专门出一篇文章就 ViewModel 及其他组件搭配使用进行说明讲解，请点击[此处](todo)。
+> 
+> 本章也会通过购买VIP会员这个业务功能点来简述实际项目中会如何使用 ViewModel 。具体代码链接请点击[这里](todo)
 
-[![kDGB3q.png](https://s2.ax1x.com/2019/02/15/kDGB3q.png)](https://imgchr.com/i/kDGB3q)
+[![k4oUIg.png](https://s2.ax1x.com/2019/02/24/k4oUIg.png)](https://imgchr.com/i/k4oUIg)   [![k4odiQ.png](https://s2.ax1x.com/2019/02/24/k4odiQ.png)](https://imgchr.com/i/k4odiQ)
 
-该 Google I/O app 总得来说分为三层：展示层（Presentation Layer）、域层（Domain Layer）、数据层（Data Layer），如下图所示。
+该 Demo 总得来说分为三层：展示层（Presentation Layer）、域层（Domain Layer）、数据层（Data Layer），如下图所示。
 
 + 展示层：View，ViewModel
 + 域层：use cases
@@ -75,24 +76,20 @@ override fun onCreate(saveInstanceState:Bundle?){
 
 ViewModels 从 LiveData 那里获取数据提供给 Views，通过 Data Binding 真正的 UI 控件就可以自动完成数据显示，可以从 Activity 和 Fragment 那些繁杂而单调的样式代码中解放出来。
 
-### 业务事例
-
-接下来我们会通过讲述 Google I/O 中日程活动详情业务来说明 ViewModel 是如何通过和其他组件合作来完成任务的。
-
-[![kyLeYt.md.jpg](https://s2.ax1x.com/2019/02/17/kyLeYt.md.jpg)](https://imgchr.com/i/kyLeYt)
-
-
 
 ### ViewModel 的 Unit test
 
 ## 内部实现
 
->偏向源码以及设计思想分析，不感兴趣的同学可以跳过这章，谢谢！
->源码来源编文时最新 lifecycle-viewmodel-2.1.0-alpha02-sources.jar,截图已经附上行号,方便比对
+> 偏向源码以及设计思想分析，不感兴趣的同学可以跳过这章，谢谢！
+> 
+> 不过真得很精彩的窝，真得不看看吗？
+>
+> 源码来源编文时最新 lifecycle-viewmodel-2.1.0-alpha02-sources.jar，截图已经附上行号，方便比对
 
-为了更好地详细了解 ViewModel,我们可以带着几个问题去学习:
+为了更好地详细了解 ViewModel，我们可以带着几个问题去学习：
 1. ViewModel 是怎么生成的?
-1. ViewModel 为什么可以达到这么神奇的效果，Activity/Fragment 都重新生成居然还可以活下来,它是怎么做到的?
+1. ViewModel 为什么可以达到这么神奇的效果，Activity/Fragment 都重新生成居然还可以活下来，它是怎么做到的?
 
 ### 1. 常见的 ViewModel 实现方式:
 

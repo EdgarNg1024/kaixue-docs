@@ -22,5 +22,11 @@ class MainActivity : AppCompatActivity() {
             intent.setClass(this, ViewModelActivity::class.java)
             startActivity(intent)
         }
+
+        btnViewmodelDemo.setOnClickListener {
+            val intent = Intent()
+            intent.setClass(this, ViewModelDemoActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

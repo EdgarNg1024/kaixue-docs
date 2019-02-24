@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".ProfileFragment">
+
+    <TextView
+            android:id="@+id/txtUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="userName"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"/>
+
+    <TextView
+            android:id="@+id/txtTips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="过期日期"
+            android:layout_marginTop="19dp"
+            android:layout_below="@+id/txtUserName"/>
+
+    <TextView
+            android:layout_toRightOf="@id/txtTips"
+            android:id="@+id/txtDeadlineDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="deadlineDate"
+            android:layout_alignTop="@+id/txtTips"
+            android:layout_marginLeft="18dp"/>
+
+    <Button
+            android:text="续费VIP"
+            android:layout_below="@id/txtTips"
+            android:id="@+id/btnBuyVIP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+</RelativeLayout>

@@ -20,6 +20,8 @@
         </activity>
         <activity android:name=".ViewModelActivity">
         </activity>
+        <activity android:name=".ViewModelDemoActivity">
+        </activity>
     </application>
 
 </manifest>
