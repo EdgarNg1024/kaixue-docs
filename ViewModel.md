@@ -69,7 +69,7 @@ override fun onCreate(saveInstanceState:Bundle?){
 
 + 展示层：View，ViewModel
 + 域层：use cases
-+ 数据层：repositories，user manager
++ 数据层：repositories
 
 展示层无法**直接**与数据层沟通，ViewModel 只可以通过一个或者多个 UseCase 去获取 repository，这种分层的做法有助于降低耦合度和提高可测试性，同时方便管理，让所有的 UseCase 都在耗时线程中执行，保证在 UI 线程中没有耗时数据的入口。
 
@@ -190,6 +190,7 @@ TODO:
 1. [ViewModels and LiveData: Patterns + AntiPatterns](https://medium.com/google-developers/viewmodels-and-livedata-patterns-antipatterns-21efaef74a54) [(译文)](https://github.com/xitu/gold-miner/blob/master/TODO/viewmodels-and-livedata-patterns-antipatterns.md)[强烈推荐，作者应该是 Google 里面有参与 ViewModel 的实现开发的，所以文章的推荐用法应该是最贴近 ViewModel 开发思想]
 1. [ViewModels: Persistence, onSaveInstanceState(), Restoring UI State and Loaders](https://medium.com/google-developers/viewmodels-persistence-onsaveinstancestate-restoring-ui-state-and-loaders-fc7cc4a6c090) [(译文)](https://github.com/xitu/gold-miner/blob/master/TODO/viewmodels-persistence-onsaveinstancestate-restoring-ui-state-and-loaders.md)[强烈推荐，作者应该是 Google 里面有参与 ViewModel 的实现开发的，所以文章的推荐用法应该是最贴近 ViewModel 开发思想]
 1. [Google I/O 2018 app — Architecture and Testing](https://medium.com/androiddevelopers/google-i-o-2018-app-architecture-and-testing-f546e37fc7eb)[强烈推荐，作者应该是 Google 里面有参与 ViewModel 的实现开发的，所以文章的推荐用法应该是最贴近 ViewModel 开发思想]
+1. [SharePreference数据存储工具类](https://blog.csdn.net/wenzhi20102321/article/details/53431407)[借用了这哥们的SharePreference工具类]
 
 ## 撰稿人
 Edgar Ng（https://github.com/EdgarNg1024)

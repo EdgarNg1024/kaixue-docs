@@ -1,37 +1,37 @@
 package com.example.edgarng.myapplication.vip
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import java.util.*
+import androidx.lifecycle.MediatorLiveData
+import com.example.edgarng.myapplication.util.SharePreferencesHelper
 
-class VIPViewModel : ViewModel {
+class VIPViewModel(application: Application) : AndroidViewModel(application) {
 
-    lateinit var deadLineDate: Date
-    lateinit var userName: String
+    lateinit var vipDto: VIPDto
 
-    constructor()
-    constructor(userName: String, deadLineDate: Date) {
-        this.userName = userName
-        this.deadLineDate = deadLineDate
-    }
-
-    private val _VIPAction = MutableLiveData<VIPViewModel>()
-    val vipAction: LiveData<VIPViewModel>
+    private val _VIPAction = MediatorLiveData<VIPDto>()
+    val vipAction: LiveData<VIPDto>
         get() = _VIPAction
 
     fun getData() {
-        this.userName = "Edgar Ng"
-        this.deadLineDate = Date()
-        _VIPAction.value = this
+        val useCase = GetVIPUseCase(SharePreferencesHelper(getApplication(), "VIP"))
+        _VIPAction.addSource(useCase.observe()) {
+            if (it.isSuccess) {
+                _VIPAction.value = it.getOrThrow()
+            }
+        }
+        useCase.execute(Unit)
     }
 
     fun buyVIP() {
-        val calendar = Calendar.getInstance()
-        calendar.time = this.deadLineDate
-        calendar.add(Calendar.MONTH, 1)
-        this.deadLineDate = calendar.time
-        _VIPAction.value = this
+        val useCase = BuyVIPUseCase(SharePreferencesHelper(getApplication(), "VIP"))
+        _VIPAction.addSource(useCase.observe()) {
+            if (it.isSuccess) {
+                _VIPAction.value = it.getOrThrow()
+            }
+        }
+        useCase.execute(this.vipDto)
     }
 
 }

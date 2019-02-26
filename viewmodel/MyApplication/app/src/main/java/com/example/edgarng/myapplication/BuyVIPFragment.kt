@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.edgarng.myapplication.vip.VIPDto
 import com.example.edgarng.myapplication.vip.VIPViewModel
 import com.example.edgarng.myapplication.vip.VIPViewModelFactory
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -26,12 +27,14 @@ class BuyVIPFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        vipViewModel = ViewModelProviders.of(activity!!, VIPViewModelFactory()).get(VIPViewModel::class.java)
-        vipViewModel.vipAction.observe(activity!!, Observer<VIPViewModel> {
-            txtUserName?.text = it.userName
-            txtDeadlineDate?.text = SimpleDateFormat("yyyy-MM-dd").format(it.deadLineDate)
-        })
-
+        activity?.let { activity ->
+            vipViewModel = ViewModelProviders.of(activity, VIPViewModelFactory(this.activity?.application!!))
+                .get(vipViewModel::class.java)
+            vipViewModel.vipAction.observe(this@BuyVIPFragment, Observer<VIPDto> {
+                txtUserName.text = it.userName
+                txtDeadlineDate.text = SimpleDateFormat("yyyy-MM-dd").format(it.deadlineDate)
+            })
+        }
         btnBuyVIP.setOnClickListener {
             vipViewModel.buyVIP()
         }
