@@ -31,7 +31,8 @@ class VIPViewModel(application: Application) : AndroidViewModel(application) {
                 _VIPAction.value = it.getOrThrow()
             }
         }
-        useCase.execute(this.vipDto)
+        _VIPAction.value?.let { useCase.execute(it) }
+
     }
 
 }

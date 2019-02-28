@@ -30,12 +30,16 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.let { activity ->
-            vipViewModel = ViewModelProviders.of(activity, VIPViewModelFactory(this@ProfileFragment.activity?.application!!)).get(VIPViewModel::class.java)
-            vipViewModel.vipAction.observe(this@ProfileFragment, Observer<VIPDto> {
+            vipViewModel =
+                ViewModelProviders.of(activity, VIPViewModelFactory(activity.application!!))
+                    .get(VIPViewModel::class.java)
+            vipViewModel.vipAction.observe(this, Observer<VIPDto> {
                 txtUserName.text = it.userName
                 txtDeadlineDate.text = SimpleDateFormat("yyyy-MM-dd").format(it.deadlineDate)
+                btnBuyVIP.visibility = View.VISIBLE
             })
         }
+        btnBuyVIP.visibility = View.GONE
         btnBuyVIP.setOnClickListener {
             (activity as ViewModelDemoActivity).addFragment(BuyVIPFragment())
         }

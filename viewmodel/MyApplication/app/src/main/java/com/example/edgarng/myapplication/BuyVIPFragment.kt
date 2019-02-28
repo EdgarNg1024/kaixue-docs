@@ -28,14 +28,17 @@ class BuyVIPFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         activity?.let { activity ->
-            vipViewModel = ViewModelProviders.of(activity, VIPViewModelFactory(this.activity?.application!!))
-                .get(vipViewModel::class.java)
-            vipViewModel.vipAction.observe(this@BuyVIPFragment, Observer<VIPDto> {
+            vipViewModel =
+                ViewModelProviders.of(activity, VIPViewModelFactory(activity.application!!))
+                    .get(VIPViewModel::class.java)
+            vipViewModel.vipAction.observe(this, Observer<VIPDto> {
+                btnBuyVIP.visibility = View.VISIBLE
                 txtUserName.text = it.userName
                 txtDeadlineDate.text = SimpleDateFormat("yyyy-MM-dd").format(it.deadlineDate)
             })
         }
         btnBuyVIP.setOnClickListener {
+            btnBuyVIP.visibility = View.GONE
             vipViewModel.buyVIP()
         }
     }
