@@ -251,6 +251,8 @@ class VIPRepository(private val sharePreferencesHelper: SharePreferencesHelper) 
 
 ![kjaeSI.png](https://s2.ax1x.com/2019/03/05/kjaeSI.png)
 
+这里留个小功课，当 APP 在购买 VIP 页面，翻转屏幕后，APP 会”回到“上一个页面，请回答为什么，并提出解决办法。
+
 ### ViewModel 的 Unit test （TODO）
 
 ## 内部实现
