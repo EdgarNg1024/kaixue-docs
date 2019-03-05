@@ -175,10 +175,16 @@ class GetVIPUseCase(private val sharePreferencesHelper: SharePreferencesHelper) 
 
         //敲黑板！！这是重点也是难点！！
         //1.为什么 UseCase 从 Repository 处获取数据要使用 LiveData？
-        //因为生命周期的原因， UseCase 的生命周期一般与 ViewModel 一样长，ViewModel 的生命周期一般会伴随 UI 控制器的销毁而销毁。有时候获取数据时间会很漫长，漫长到 UI 控制器销毁了之后才返回来。这时候就有可能会导致内存泄漏或者回调的时候会出现 View/ViewModel 不存在的情况。
+        //因为生命周期的原因， UseCase 的生命周期一般与 ViewModel 一样长，
+        //ViewModel 的生命周期一般会伴随 UI 控制器的销毁而销毁。
+        //有时候获取数据时间会很漫长，漫长到 UI 控制器销毁了之后才返回来。
+        //这时候就有可能会导致内存泄漏或者回调的时候会出现 View/ViewModel 不存在的情况。
 
         //2.在 UseCase 中如何使用 LiveData？
-        //通过使用 Transformations.switchMap（） 的目的是可以将上一层（ UI 控制器对ViewModel 的 LiveData 观察状态传递给 UseCase 。因为 LiveData.observe() 方法需要 LifecycleOwner,但是 UseCase 没有，所以通过这种办法可以进行转化传递
+        //通过使用 Transformations.switchMap（） 的目的是可以将上一层（ UI 控制器对ViewModel 的 LiveData 观察状态传递给 UseCase 。
+        //因为 LiveData.observe() 方法需要 LifecycleOwner,
+        //但是 UseCase 没有 LifecycleOwner，
+        //所以通过这种办法可以进行转化传递
         result.addSource(
             Transformations.switchMap(
                 vipRepositoryData,
@@ -242,6 +248,7 @@ class VIPRepository(private val sharePreferencesHelper: SharePreferencesHelper) 
 ```
 
 通过查看代码可以知道，最后的状态是下图这样的：
+
 ![kjaeSI.png](https://s2.ax1x.com/2019/03/05/kjaeSI.png)
 
 ### ViewModel 的 Unit test （TODO）
