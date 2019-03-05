@@ -358,6 +358,8 @@ TODO:
 ## 源码地址
 [https://github.com/google/iosched/](https://github.com/google/iosched/)
 
+[https://github.com/EdgarNg1024/kaixue-docs/tree/master/viewmodel](https://github.com/EdgarNg1024/kaixue-docs/tree/master/viewmodel)
+
 ## 参考
 1. [Android Jetpack - ViewModel | 中文教学视频](https://www.bilibili.com/video/av29949898)
 1. [ViewModels and LiveData: Patterns + AntiPatterns](https://medium.com/google-developers/viewmodels-and-livedata-patterns-antipatterns-21efaef74a54) [(译文)](https://github.com/xitu/gold-miner/blob/master/TODO/viewmodels-and-livedata-patterns-antipatterns.md)[强烈推荐，作者应该是 Google 里面有参与 ViewModel 的实现开发的，所以文章的推荐用法应该是最贴近 ViewModel 开发思想]
