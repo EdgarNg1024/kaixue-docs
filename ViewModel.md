@@ -58,11 +58,12 @@ override fun onCreate(saveInstanceState:Bundle?){
 
 > ViewModel 一般会搭载其他组件（如：LiveData、DataBinding 等）一同使用，本系列文章会专门出一篇文章就 ViewModel 及其他组件搭配使用进行说明讲解，请点击[此处](todo)。
 > 
-> 本章也会通过购买VIP会员这个业务功能点来简述实际项目中会如何使用 ViewModel 。具体代码链接请点击[这里](todo)
+> 本章也会通过购买VIP会员这个业务功能点来简述实际项目中会如何使用 ViewModel 。具体代码链接请点击[这里](https://github.com/EdgarNg1024/kaixue-docs/tree/master/viewmodel)
 
 ![k4TX7T.png](https://s2.ax1x.com/2019/02/24/k4TX7T.png)   [![k4odiQ.png](https://s2.ax1x.com/2019/02/24/k4odiQ.png)](https://imgchr.com/i/k4odiQ)
 
 ![k5FfHO.jpg](https://s2.ax1x.com/2019/02/24/k5FfHO.jpg)  ![k5F4ED.jpg](https://s2.ax1x.com/2019/02/24/k5F4ED.jpg)
+![kjtFoj.gif](https://s2.ax1x.com/2019/03/05/kjtFoj.gif)
 
 
 该 Demo 总得来说分为三层：展示层（Presentation Layer）、域层（Domain Layer）、数据层（Data Layer），如下图所示。
@@ -79,8 +80,171 @@ override fun onCreate(saveInstanceState:Bundle?){
 
 ViewModels 从 LiveData 那里获取数据提供给 Views，通过 Data Binding 真正的 UI 控件就可以自动完成数据显示，可以从 Activity 和 Fragment 那些繁杂而单调的样式代码中解放出来。
 
+我们以购买会员为例，说明如何使用 ViewModel、UseCase、Repository。首先涉及到  `BuyVIPFragment.kt`,`VIPViewModel.kt`,`VIPViewModelFactory.kt`,`VIPRepository.kt` 等类。
 
-### ViewModel 的 Unit test
+```kotlin
+//购买 VIP Fragment 类
+class BuyVIPFragment : Fragment() {
+
+    private lateinit var vipViewModel: VIPViewModel
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        activity?.let { activity ->
+            //通过 ViewModelProviders.of() 获得 VIPViewModel 
+            //因为使用的是 ViewModelProviders.of(activity) ,所以获取到的是上一个 Fragment 共有的 ViewModel，从而到达两个 Fragment 的数据可以进行同步更新 
+            vipViewModel =
+                ViewModelProviders.of(activity, VIPViewModelFactory(activity.application!!))
+                    .get(VIPViewModel::class.java)
+
+            //liveData 的监听回调方法（LiveData 用法不在这里详细讲解）
+            vipViewModel.vipAction.observe(this, Observer<VIPDto> {
+                btnBuyVIP.visibility = View.VISIBLE
+                txtUserName.text = it.userName
+                txtDeadlineDate.text = SimpleDateFormat("yyyy-MM-dd").format(it.deadlineDate)
+            })
+        }
+        //触发购买 VIP 方法
+        btnBuyVIP.setOnClickListener {
+            btnBuyVIP.visibility = View.GONE
+            vipViewModel.buyVIP()
+        }
+    }
+}
+```
+
+```kotlin
+//viewmodel 工厂生成类
+class VIPViewModelFactory(val application: Application) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        //新建 VIPViewModel，并触发获取数据方法 getData()
+        //网上有些例子是不使用 Factory，在获取 VIPViewModel 处，再调用初始化方法。这样也可以实现，不过如果是多个 Fragment 共用 ViewModel 就有可能会有数据重复加载的问题
+        return VIPViewModel(application).also { it.getData() } as T
+    }
+}
+```
+
+```kotlin
+//viewmodel 类
+class VIPViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val _VIPAction = MediatorLiveData<VIPDto>()
+    //对外 LiveData 类，ViewModel 与 LiveData 结合使用，方便 UI 控制器进行数据监听及更新，数据有更改时会通知观察者
+    val vipAction: LiveData<VIPDto>
+        get() = _VIPAction
+
+
+    //获取数据
+    fun getData() {
+        //使用 UseCase 获取数据，一般 UseCase 的生命周期与 ViewModel 一样长，所以他们之间也可以不使用 LiveData ， 不过这里也使用了 LiveData 进行转化了
+        val useCase = GetVIPUseCase(SharePreferencesHelper(getApplication(), "VIP"))
+        _VIPAction.addSource(useCase.observe()) {
+            //一般会这里处理一些数据成功失败状态
+            if (it.isSuccess) {
+                _VIPAction.value = it.getOrThrow()
+            }
+        }
+        useCase.execute(Unit)
+    }
+
+    //购买 VIP
+    fun buyVIP() {
+        val useCase = BuyVIPUseCase(SharePreferencesHelper(getApplication(), "VIP"))
+        _VIPAction.addSource(useCase.observe()) {
+            if (it.isSuccess) {
+                _VIPAction.value = it.getOrThrow()
+            }
+        }
+        _VIPAction.value?.let { useCase.execute(it) }
+
+    }
+}
+```
+
+```kotlin
+//获得 VIP 用户数据
+class GetVIPUseCase(private val sharePreferencesHelper: SharePreferencesHelper) : MediatorUseCase<Unit, VIPDto>() {
+    override fun execute(parameters: Unit) {
+        //从 Repository 获取数据
+        val vipRepositoryData = VIPRepository(sharePreferencesHelper).getVIP()
+
+        //一般还会有成功、失败两种状态
+        val switchMapFunction = Function<VIPDto, LiveData<Result<VIPDto>>> {
+            MediatorLiveData<Result<VIPDto>>().apply { value = Result.success(it) }
+        }
+
+        //敲黑板！！这是重点也是难点！！
+        //1.为什么 UseCase 从 Repository 处获取数据要使用 LiveData？
+        //因为生命周期的原因， UseCase 的生命周期一般与 ViewModel 一样长，ViewModel 的生命周期一般会伴随 UI 控制器的销毁而销毁。有时候获取数据时间会很漫长，漫长到 UI 控制器销毁了之后才返回来。这时候就有可能会导致内存泄漏或者回调的时候会出现 View/ViewModel 不存在的情况。
+
+        //2.在 UseCase 中如何使用 LiveData？
+        //通过使用 Transformations.switchMap（） 的目的是可以将上一层（ UI 控制器对ViewModel 的 LiveData 观察状态传递给 UseCase 。因为 LiveData.observe() 方法需要 LifecycleOwner,但是 UseCase 没有，所以通过这种办法可以进行转化传递
+        result.addSource(
+            Transformations.switchMap(
+                vipRepositoryData,
+                switchMapFunction
+            ) as MediatorLiveData<Result<VIPDto>>
+        ) {
+            result.value = it
+        }
+    }
+}
+```
+
+```kotlin
+//常见的 Repository 类
+class VIPRepository(private val sharePreferencesHelper: SharePreferencesHelper) {
+
+    fun buyVIP(user: VIPDto): LiveData<VIPDto> {
+        val result = MutableLiveData<VIPDto>()
+
+        //异步赋值的
+        GlobalScope.launch(Dispatchers.Main) {
+            async(Dispatchers.IO) {
+                delay(1000)
+                val calendar = Calendar.getInstance()
+                calendar.time = user.deadlineDate
+                calendar.add(Calendar.MONTH, 1)
+
+                val deadLineDate = calendar.time.toString()
+                val userName = user.userName
+
+                val contentValue = SharePreferencesHelper.ContentValue("deadLineDate", deadLineDate)
+                val contentValue2 = SharePreferencesHelper.ContentValue("userName", userName)
+                sharePreferencesHelper.putValues(contentValue, contentValue2)
+                async(Dispatchers.Main) {
+                    result.value = VIPDto(userName, Date(deadLineDate))
+                }
+            }.await()
+        }
+
+        return result
+    }
+
+    fun getVIP(): LiveData<VIPDto> {
+
+        val result = MutableLiveData<VIPDto>()
+        //异步赋值的
+        GlobalScope.launch(Dispatchers.Main) {
+            async(Dispatchers.IO) {
+                delay(1500)
+                val deadLineDate = sharePreferencesHelper.getString("deadLineDate") ?: Date().toString()
+                val userName = sharePreferencesHelper.getString("userName") ?: "EdgarNg"
+                async(Dispatchers.Main) {
+                    result.value = VIPDto(userName, Date(deadLineDate))
+                }
+            }.await()
+        }
+
+        return result
+    }
+}
+```
+
+通过查看代码可以知道，最后的状态是下图这样的：
+![kjaeSI.png](https://s2.ax1x.com/2019/03/05/kjaeSI.png)
+
+### ViewModel 的 Unit test （TODO）
 
 ## 内部实现
 

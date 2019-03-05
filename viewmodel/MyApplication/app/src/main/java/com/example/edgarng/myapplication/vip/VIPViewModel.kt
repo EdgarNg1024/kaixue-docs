@@ -8,8 +8,6 @@ import com.example.edgarng.myapplication.util.SharePreferencesHelper
 
 class VIPViewModel(application: Application) : AndroidViewModel(application) {
 
-    lateinit var vipDto: VIPDto
-
     private val _VIPAction = MediatorLiveData<VIPDto>()
     val vipAction: LiveData<VIPDto>
         get() = _VIPAction

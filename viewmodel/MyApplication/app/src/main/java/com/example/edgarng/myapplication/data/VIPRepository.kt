@@ -38,8 +38,6 @@ class VIPRepository(private val sharePreferencesHelper: SharePreferencesHelper) 
     fun getVIP(): LiveData<VIPDto> {
 
         val result = MutableLiveData<VIPDto>()
-
-
         //异步赋值的
         GlobalScope.launch(Dispatchers.Main) {
             async(Dispatchers.IO) {
