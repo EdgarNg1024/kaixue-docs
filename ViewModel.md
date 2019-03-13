@@ -5,15 +5,15 @@ Android Jetpack 是一系列助力您更容易打造优秀 Android 应用的工�
 
 ## 介绍
 
-简单来说,ViewModel 是用来保存应用 UI 数据的类,而且它会在配置变更后继续存在。它可以脱离 View 单纯做 Junit 的测试，更方便大家做单元测试。ViewModel 有这样的特性，但是它在实际项目能够有何表现，还需要看待各位是如何使用的。一般会和 Livedata、databinding 等其他组件进行组合使用，下面会介绍具体可以解决什么问题，和一般项目中会建议如何使用。在介绍的过程中，还会穿插一些架构的思想以及如何看源码分析源码的思路。
+简单来说,ViewModel 是用来保存应用 UI 数据的类,而且它会在配置变更后继续存在。它可以脱离 View 单纯做 Junit 的测试，更方便大家做单元测试。ViewModel 有这样的特性，但是它在实际项目能够有何表现，还需要看待各位是如何使用的。一般会和 Livedata、DataBinding 等其他组件进行组合使用，下面会介绍具体可以解决什么问题，和一般项目中会建议如何使用。在介绍的过程中，还会穿插一些架构的思想以及如何看源码分析源码的思路。
 
 ## 解决了什么问题
 
-手机屏幕旋转是配置变更的一种，当旋转屏幕时， Activity 会被重新创建。如果数据没有被正确的保存和恢复，就有可能丢失。从而导致莫名其妙的 UI 错误，甚至应用崩溃。Demo请点击[这里](https://github.com/EdgarNg1024/kaixue-docs/tree/master/viewmodel/MyApplication)
+手机屏幕旋转是配置变更的一种，当旋转屏幕时， Activity 会被重新创建。如果数据没有被正确的保存和恢复，就有可能丢失。从而导致莫名其妙的 UI 错误，甚至应用崩溃。Demo 请点击[这里](https://github.com/EdgarNg1024/kaixue-docs/tree/master/viewmodel/MyApplication)
 
 ![kyHxB9.gif](https://s2.ax1x.com/2019/02/17/kyHxB9.gif)
 
-![应用 UI 数据丢失](https://s2.ax1x.com/2019/01/29/kQOejs.png)
+![应用 UI 数据丢失](https://s2.ax1x.com/2019/03/13/AkWZRS.png)
 
 相反的， ViewModel 会在配置更改后继续存在，所以，如果将应用所有的 UI 数据保存在 ViewModel 中，而不是 Activity 中，这样就可以保证数据不会受到配置变更的影响了。
 
@@ -27,9 +27,9 @@ Android Jetpack 是一系列助力您更容易打造优秀 Android 应用的工�
 
 ## 简单使用
 
-上面提到，不要将太多的逻辑处理、数据存储获取放到 ViewModel 类里面处理，它仅仅作为 UI 数据的保存！数据存储获取可以创建 Repository 类， UI 数据处理可以使用 Presenter 类。Demo请点击[这里](https://github.com/EdgarNg1024/kaixue-docs/tree/master/viewmodel/MyApplication)
+上面提到，不要将太多的逻辑处理、数据存储获取放到 ViewModel 类里面处理，它仅仅作为 UI 数据的保存！数据存储获取可以创建 Repository 类， UI 数据处理可以使用 Presenter 类。Demo 请点击[这里](https://github.com/EdgarNg1024/kaixue-docs/tree/master/viewmodel/MyApplication)
 
-![各类职责](https://s2.ax1x.com/2019/01/29/kQX0Ln.png)
+![AkWpKH.png](https://s2.ax1x.com/2019/03/13/AkWpKH.png)
 
 ViewModel 的使用方式如下：
 
@@ -356,9 +356,9 @@ TODO:
 1. ViewModel 尽量不要绑定跟Android包有关的类，有可能造成内存泄漏（具体请见[内部实现]章节）以及会给 Unit Test 造成困难，Google 建立 JetPack 的其中一个目的就是解耦可测试！
 
 ## 源码地址
-[https://github.com/google/iosched/](https://github.com/google/iosched/)
-
 [https://github.com/EdgarNg1024/kaixue-docs/tree/master/viewmodel](https://github.com/EdgarNg1024/kaixue-docs/tree/master/viewmodel)
+
+[https://github.com/google/iosched/](https://github.com/google/iosched/)
 
 ## 参考
 1. [Android Jetpack - ViewModel | 中文教学视频](https://www.bilibili.com/video/av29949898)
